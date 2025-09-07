@@ -253,60 +253,87 @@
   </div>
 
   <script>
-    async function enhanceWithAI(text, section) {
-      if (!text || text.length > 600) return text;
-      try {
-        const res = await fetch("http://localhost:3000/ask-groq", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: `Make this resume section sound professional, fix grammar, expand slightly if needed, and use **bold** for roles, skills, degrees, or company names:\n${text}`
-          })
-        });
-        const data = await res.json();
-        return data.response || text;
-      } catch {
-        return text;
-      }
-    }
+async function enhanceWithAI(text) {
+  if (!text || text.length > 600) return text;
 
-    function renderMarkdown(md) {
-      return marked.parse(md);
-    }
+  const apiKey = "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"; // ← Replace with your actual key
+  const payload = {
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "system",
+        content: `You are a professional resume editor AI. Improve this resume section professionally, fix grammar, expand slightly if needed, and use **bold** for roles, skills, degrees, or company names.`
+      },
+      { role: "user", content: text }
+    ],
+    temperature: 0.7
+  };
 
-    document.getElementById("resumeForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const title = document.getElementById("title").value;
-      const skills = document.getElementById("skills").value.split(',').map(s => s.trim());
-      const about = document.getElementById("about").value;
-      const education = document.getElementById("education").value;
-      const experience = document.getElementById("experience").value;
-      const photo = document.getElementById("photo").files[0];
-
-      document.getElementById("resumePreview").style.display = "flex";
-      document.getElementById("printBtn").style.display = "block";
-
-      document.getElementById("namePreview").innerText = name;
-      document.getElementById("titlePreview").innerText = title;
-      document.getElementById("skillsPreview").innerHTML = skills.map(skill => `<li>${skill}</li>`).join("");
-
-      if (photo) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          document.getElementById("photoPreview").src = reader.result;
-        };
-        reader.readAsDataURL(photo);
-      }
-
-      const aboutEnhanced = await enhanceWithAI(about, "About Me");
-      const educationEnhanced = await enhanceWithAI(education, "Education");
-      const experienceEnhanced = await enhanceWithAI(experience, "Experience");
-
-      document.getElementById("aboutPreview").innerHTML = renderMarkdown(aboutEnhanced);
-      document.getElementById("educationPreview").innerHTML = renderMarkdown(educationEnhanced);
-      document.getElementById("experiencePreview").innerHTML = renderMarkdown(experienceEnhanced);
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     });
-  </script>
+    const data = await res.json();
+
+    if (data.error) {
+      console.error("Groq API Error:", data.error.message);
+      return text;
+    } else if (data.choices && data.choices.length > 0) {
+      return data.choices[0].message.content;
+    } else {
+      console.error("Unexpected API response structure", data);
+      return text;
+    }
+  } catch (err) {
+    console.error("Fetch Error:", err);
+    return text;
+  }
+}
+
+function renderMarkdown(md) {
+  return marked.parse(md);
+}
+
+document.getElementById("resumeForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const title = document.getElementById("title").value;
+  const skills = document.getElementById("skills").value.split(',').map(s => s.trim());
+  const about = document.getElementById("about").value;
+  const education = document.getElementById("education").value;
+  const experience = document.getElementById("experience").value;
+  const photo = document.getElementById("photo").files[0];
+
+  document.getElementById("resumePreview").style.display = "flex";
+  document.getElementById("printBtn").style.display = "block";
+
+  document.getElementById("namePreview").innerText = name;
+  document.getElementById("titlePreview").innerText = title;
+  document.getElementById("skillsPreview").innerHTML = skills.map(skill => `<li>${skill}</li>`).join("");
+
+  if (photo) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById("photoPreview").src = reader.result;
+    };
+    reader.readAsDataURL(photo);
+  }
+
+  const aboutEnhanced = await enhanceWithAI(about);
+  const educationEnhanced = await enhanceWithAI(education);
+  const experienceEnhanced = await enhanceWithAI(experience);
+
+  document.getElementById("aboutPreview").innerHTML = renderMarkdown(aboutEnhanced);
+  document.getElementById("educationPreview").innerHTML = renderMarkdown(educationEnhanced);
+  document.getElementById("experiencePreview").innerHTML = renderMarkdown(experienceEnhanced);
+});
+</script>
+
 </body>
 </html>
