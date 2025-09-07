@@ -135,62 +135,118 @@
       <div id="jobCards"></div>
     </div>
   </div>
+<script>
+  const formWrapper = document.querySelector(".container form");
+  const jobCardsContainer = document.getElementById("jobCards");
+  const searchInput = document.getElementById("searchInput");
 
-  <script>
-    const form = document.getElementById("jobForm");
-    const jobCardsContainer = document.getElementById("jobCards");
-    const searchInput = document.getElementById("searchInput");
+  // Hide form initially
+  formWrapper.style.display = "none";
 
-    form.addEventListener("submit", function(e) {
+  // + Post Job button
+  const addJobBtn = document.createElement("button");
+  addJobBtn.textContent = "+ Post Job";
+  addJobBtn.style.cssText = `
+    display:block;
+    margin:20px auto;
+    background:#2b4c7e;
+    color:white;
+    padding:12px 24px;
+    font-weight:bold;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+  `;
+  addJobBtn.addEventListener("click", () => {
+    if (formWrapper.style.display === "none") {
+      formWrapper.style.display = "block";
+      addJobBtn.textContent = "− Hide Form";
+      window.scrollTo({ top: formWrapper.offsetTop - 20, behavior: "smooth" });
+    } else {
+      formWrapper.style.display = "none";
+      addJobBtn.textContent = "+ Post Job";
+    }
+  });
+  document.querySelector(".container").prepend(addJobBtn);
+
+  // Post job form submission
+  formWrapper.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const title = document.getElementById("jobTitle").value;
+    const skills = document.getElementById("skills").value;
+    const desc = document.getElementById("description").value;
+    const location = document.getElementById("location").value;
+    const salary = document.getElementById("salary").value;
+    const meeting = document.getElementById("meetingLink").value;
+
+    const card = document.createElement("div");
+    card.className = "job-card";
+    card.innerHTML = `
+      <h3>${title}</h3>
+      <p><strong>Skills:</strong> ${skills}</p>
+      <p><strong>Description:</strong> ${desc}</p>
+      <p><strong>Location:</strong> ${location}</p>
+      <p><strong>Salary:</strong> ${salary || "Not disclosed"}</p>
+      <button class="apply-btn">Apply Now</button>
+      <div class="apply-form">
+        <label>Your Name</label>
+        <input type="text" placeholder="Enter your name" />
+        <label>Your Email</label>
+        <input type="email" placeholder="Enter your email" />
+        <label>Why should we hire you?</label>
+        <textarea rows="3" placeholder="Write your pitch"></textarea>
+        <div class="meeting-link">📅 Interview Link: <a href="${meeting}" target="_blank">${meeting}</a></div>
+        <button class="submit-apply" style="margin-top:10px;background:#28a745;color:white;padding:8px 14px;border:none;border-radius:6px;cursor:pointer;">Submit Application</button>
+      </div>
+    `;
+
+    const applyBtn = card.querySelector(".apply-btn");
+    const applyForm = card.querySelector(".apply-form");
+    const submitApplyBtn = card.querySelector(".submit-apply");
+    const nameInput = applyForm.querySelector("input[type='text']");
+    const meetingDiv = applyForm.querySelector(".meeting-link");
+
+    // Toggle form visibility
+    applyBtn.addEventListener("click", () => {
+      applyForm.style.display = applyForm.style.display === "block" ? "none" : "block";
+      
+    });
+
+    // Submit application
+    submitApplyBtn.addEventListener("click", (e) => {
       e.preventDefault();
+      if (nameInput.value.trim() === "") {
+        alert("Please enter your name to apply.");
+        return;
+      }
+      applyBtn.textContent = "Applied ✅";
+      applyBtn.disabled = true;
 
-      const title = document.getElementById("jobTitle").value;
-      const skills = document.getElementById("skills").value;
-      const desc = document.getElementById("description").value;
-      const location = document.getElementById("location").value;
-      const salary = document.getElementById("salary").value;
-      const meeting = document.getElementById("meetingLink").value;
-
-      const card = document.createElement("div");
-      card.className = "job-card";
-      card.innerHTML = `
-        <h3>${title}</h3>
-        <p><strong>Skills:</strong> ${skills}</p>
-        <p><strong>Description:</strong> ${desc}</p>
-        <p><strong>Location:</strong> ${location}</p>
-        <p><strong>Salary:</strong> ${salary || "Not disclosed"}</p>
-        <button class="apply-btn">Apply Now</button>
-        <div class="apply-form">
-          <label>Your Name</label>
-          <input type="text" placeholder="Enter your name" />
-          <label>Your Email</label>
-          <input type="email" placeholder="Enter your email" />
-          <label>Why should we hire you?</label>
-          <textarea rows="3" placeholder="Write your pitch"></textarea>
-          <div class="meeting-link">📅 Interview Link: <a href="${meeting}" target="_blank">${meeting}</a></div>
-        </div>
-      `;
-
-      card.querySelector(".apply-btn").addEventListener("click", () => {
-        card.classList.toggle("expanded");
-        const form = card.querySelector(".apply-form");
-        form.style.display = form.style.display === "block" ? "none" : "block";
+      // Hide the form fields except the meeting link
+      Array.from(applyForm.children).forEach(child => {
+        if (!child.classList.contains("meeting-link")) child.style.display = "none";
       });
-
-      jobCardsContainer.appendChild(card);
-      form.reset();
+      applyForm.style.display = "block"; // Show only meeting link
     });
 
-    searchInput.addEventListener("input", function() {
-      const filter = this.value.toLowerCase();
-      const cards = jobCardsContainer.querySelectorAll(".job-card");
-      cards.forEach(card => {
-        const title = card.querySelector("h3").textContent.toLowerCase();
-        const skills = card.querySelector("p").textContent.toLowerCase();
-        card.style.display = title.includes(filter) || skills.includes(filter) ? "block" : "none";
-      });
+    jobCardsContainer.appendChild(card);
+    formWrapper.reset();
+  });
+
+  // Search functionality
+  searchInput.addEventListener("input", function() {
+    const filter = this.value.toLowerCase();
+    const cards = jobCardsContainer.querySelectorAll(".job-card");
+    cards.forEach(card => {
+      const title = card.querySelector("h3").textContent.toLowerCase();
+      const skills = card.querySelector("p").textContent.toLowerCase();
+      card.style.display = title.includes(filter) || skills.includes(filter) ? "block" : "none";
     });
-  </script>
+  });
+</script>
+
 
 </body>
 </html>
