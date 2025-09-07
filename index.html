@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartHire India</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f8ff;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(0, 82, 212, 0.9);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      width: 90%;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .nav-links li a::after {
+      content: '';
+      width: 0;
+      height: 2px;
+      background: #ffdb58;
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      transition: 0.3s;
+    }
+
+    .nav-links li a:hover::after {
+      width: 100%;
+    }
+
+    /* Job Finder AI button */
+    .job-ai-btn {
+      padding: 6px 12px;
+      background: linear-gradient(to right, #00c6ff, #0072ff); /* 🔵 gradient background */
+      color: white;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .job-ai-btn:hover {
+      background: #ffdb58;
+      color: #000;
+    }
+
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .bar {
+      width: 25px;
+      height: 3px;
+      background: white;
+      transition: 0.4s;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background: #0052D4;
+        padding: 1rem;
+        border-radius: 10px;
+        display: none;
+        animation: fadeSlide 0.3s ease-in-out forwards;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      padding: 100px 20px;
+      text-align: center;
+      color: white;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    header h1 {
+      font-size: 3rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+
+    section {
+      padding: 60px 20px;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #0052D4;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .feature {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature h3 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #002244;
+      color: #fff;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hamburger to X animation */
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔹 Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">SmartHire India</div>
+      <div class="menu-toggle" id="menuToggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#challenges">Challenges</a></li>
+        <li><a href="#solution">Solution</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="job-finder.html" class="job-ai-btn">Job Finder AI</a></li>
+        <li><a href="resume-maker.html">Resume Maker</a></li>
+        <li><a href="employee.html">Employers Needed</a></li>
+
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 🔹 Hero / Header -->
+  <header>
+    <div class="container">
+      <h1>SmartHire India</h1>
+      <p>Using AI to Close the Employment Gap</p>
+    </div>
+  </header>
+
+  <!-- 🔹 Sections -->
+  <section class="about" id="about">
+    <div class="container">
+      <h2>Project Description</h2>
+      <p>
+        India suffers from an enormous employment paradox: while millions of qualified and trained youths are unemployed or underemployed, employers, SMEs, startups, and solo-hirers struggle to find suitable candidates affordably and on time.
+        <br><br>
+        The disconnection is most severe in rural and semiurban regions, where access to job listings, career guidance, and efficient hiring tools remains limited.
+      </p>
+    </div>
+  </section>
+
+  <section class="challenges" id="challenges">
+    <div class="container">
+      <h2>Key Challenges</h2>
+      <ul>
+        <li>Insufficient job transparency for rural job seekers</li>
+        <li>Mismatch between qualifications and market skills</li>
+        <li>Outdated recruitment platforms and processes</li>
+        <li>Lack of personalized career counseling</li>
+        <li>Limited access for mobile and regional language users</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="solution" id="solution">
+    <div class="container">
+      <h2>Solution Overview</h2>
+      <p>
+        We propose <strong>SmartHire India</strong> — an AI-powered platform that revolutionizes job search and hiring through intelligent matchmaking, professional development, and employer tools tailored for India’s unique workforce ecosystem.
+      </p>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Key Features</h2>
+      <div class="feature">
+        <h3>AI Job Matching</h3>
+        <p>Match candidates with jobs using skills, preferences, and experience, beyond basic keyword filters.</p>
+      </div>
+      <div class="feature">
+        <h3>Smart Career Development Tools</h3>
+        <p>Includes resume builder, AI interview coach, and personalized upskilling suggestions.</p>
+      </div>
+      <div class="feature">
+        <h3>Employer Support</h3>
+        <p>Helps employers write better job descriptions and use AI for fast, accurate shortlisting.</p>
+      </div>
+      <div class="feature">
+        <h3>Wage Transparency Engine</h3>
+        <p>Analyzes market trends to suggest fair, location-aware wages and promote ethical hiring.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 Placeholder for Job Finder AI -->
+  <section id="job-ai" class="about">
+    <div class="container">
+      <h2>Job Finder AI</h2>
+      <p>This section will soon let you interact with our AI-powered job assistant!</p>
+    </div>
+  </section>
+
+  <!-- 🔹 Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 SmartHire India. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle mobile menu
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+      menuToggle.classList.toggle("open");
+    });
+
+    // Section reveal on scroll
+    const sections = document.querySelectorAll("section");
+    const revealSection = () => {
+      const trigger = window.innerHeight * 0.85;
+      sections.forEach(sec => {
+        const top = sec.getBoundingClientRect().top;
+        if (top < trigger) {
+          sec.classList.add("visible");
+        }
+      });
+    };
+    window.addEventListener("scroll", revealSection);
+    window.addEventListener("load", revealSection);
+  </script>
+</body>
+</html>

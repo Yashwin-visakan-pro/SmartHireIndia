@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartHire Resume</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+    * {
+      font-family: 'Montserrat', sans-serif;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f0f0f0;
+      padding: 20px;
+    }
+
+    /* Resume Preview Styling */
+    .resume-container {
+      display: flex;
+      max-width: 794px;
+      height: 1123px;
+      margin: auto;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      page-break-after: avoid;
+    }
+
+    .left-column {
+      width: 35%;
+      background: #002b5b;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .right-column {
+      width: 65%;
+      padding: 30px 40px;
+      color: #222;
+      
+    }
+
+    .photo {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid white;
+      margin: 0 auto 20px;
+    }
+
+    h1 { font-size: 24px; margin-bottom: 5px; }
+    h2 { font-size: 16px; font-weight: 400; margin-bottom: 30px; }
+
+    h3 {
+      margin-top: 25px;
+      color: #fbc02d;
+      font-size: 14px;
+      border-bottom: 1px solid #fbc02d;
+      display: inline-block;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 13px;
+    }
+
+    ul li { margin-bottom: 6px; }
+
+    .section-title {
+      font-weight: bold;
+      color: #2d87f0;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .text-block {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Form Styling */
+    .form-section {
+      max-width: 850px;
+      background: white;
+      padding: 30px 40px;
+      margin: 40px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-left: 6px solid #2d87f0;
+    }
+
+    .form-section h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: #002b5b;
+      text-align: center;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input, textarea {
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #2d87f0;
+      box-shadow: 0 0 5px rgba(45,135,240,0.3);
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      padding: 12px 25px;
+      background: #2d87f0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #1c6cd6;
+    }
+
+    #printBtn {
+      display: none;
+      background: #28a745;
+      margin: 20px auto;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      .resume-container, .resume-container * {
+        visibility: visible;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .resume-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="form-section">
+    <h2>SmartHire Resume Generator</h2>
+    <form id="resumeForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="name" required />
+        </div>
+        <div class="form-group">
+          <label>Job Title</label>
+          <input type="text" id="title" required />
+        </div>
+        <div class="form-group full-width">
+          <label>Profile Photo</label>
+          <input type="file" id="photo" accept="image/*" />
+        </div>
+        <div class="form-group full-width">
+          <label>About Me</label>
+          <textarea id="about" rows="3"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label>Skills (comma separated)</label>
+          <input type="text" id="skills" />
+        </div>
+        <div class="form-group full-width">
+          <label>Education</label>
+          <textarea id="education" rows="3"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label>Experience</label>
+          <textarea id="experience" rows="3"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <button type="submit">Generate Resume</button>
+        </div>
+      </div>
+    </form>
+    <button id="printBtn" onclick="window.print()">Print / Download PDF</button>
+  </div>
+
+  <div class="resume-container" id="resumePreview" style="display:none;">
+    <div class="left-column">
+      <img id="photoPreview" class="photo" src="" alt="Your Photo"/>
+      <h1 id="namePreview">Your Name</h1>
+      <h2 id="titlePreview">Job Title</h2>
+      <h3>Skills</h3>
+      <ul id="skillsPreview"></ul>
+    </div>
+    <div class="right-column">
+      <div>
+        <div class="section-title">About Me</div>
+        <div class="text-block" id="aboutPreview"></div>
+        <div class="section-title">Education</div>
+        <div class="text-block" id="educationPreview"></div>
+        <div class="section-title">Experience</div>
+        <div class="text-block" id="experiencePreview"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function enhanceWithAI(text, section) {
+      if (!text || text.length > 600) return text;
+      try {
+        const res = await fetch("http://localhost:3000/ask-groq", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: `Make this resume section sound professional, fix grammar, expand slightly if needed, and use **bold** for roles, skills, degrees, or company names:\n${text}`
+          })
+        });
+        const data = await res.json();
+        return data.response || text;
+      } catch {
+        return text;
+      }
+    }
+
+    function renderMarkdown(md) {
+      return marked.parse(md);
+    }
+
+    document.getElementById("resumeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const title = document.getElementById("title").value;
+      const skills = document.getElementById("skills").value.split(',').map(s => s.trim());
+      const about = document.getElementById("about").value;
+      const education = document.getElementById("education").value;
+      const experience = document.getElementById("experience").value;
+      const photo = document.getElementById("photo").files[0];
+
+      document.getElementById("resumePreview").style.display = "flex";
+      document.getElementById("printBtn").style.display = "block";
+
+      document.getElementById("namePreview").innerText = name;
+      document.getElementById("titlePreview").innerText = title;
+      document.getElementById("skillsPreview").innerHTML = skills.map(skill => `<li>${skill}</li>`).join("");
+
+      if (photo) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          document.getElementById("photoPreview").src = reader.result;
+        };
+        reader.readAsDataURL(photo);
+      }
+
+      const aboutEnhanced = await enhanceWithAI(about, "About Me");
+      const educationEnhanced = await enhanceWithAI(education, "Education");
+      const experienceEnhanced = await enhanceWithAI(experience, "Experience");
+
+      document.getElementById("aboutPreview").innerHTML = renderMarkdown(aboutEnhanced);
+      document.getElementById("educationPreview").innerHTML = renderMarkdown(educationEnhanced);
+      document.getElementById("experiencePreview").innerHTML = renderMarkdown(experienceEnhanced);
+    });
+  </script>
+</body>
+</html>

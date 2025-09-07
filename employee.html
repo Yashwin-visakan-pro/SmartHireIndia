@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post a Job - SmartHire India</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef1f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2b4c7e;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: border 0.3s;
+    }
+    input:focus, textarea:focus {
+      border-color: #2b4c7e;
+      outline: none;
+    }
+    button {
+      background: #2b4c7e;
+      color: white;
+      font-weight: bold;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #1c3454;
+    }
+    .job-listings {
+      margin-top: 40px;
+    }
+    .job-card {
+      background: #f6faff;
+      border-left: 6px solid #2b4c7e;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .job-card.expanded {
+      background: #e6f0ff;
+      transform: scale(1.02);
+    }
+    .job-card h3 {
+      margin-top: 0;
+      color: #2b4c7e;
+    }
+    .apply-btn {
+      margin-top: 10px;
+      background: #007b55;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .apply-btn:hover {
+      background: #005e3d;
+    }
+    .apply-form {
+      display: none;
+      margin-top: 15px;
+    }
+    .meeting-link {
+      background: #fff4e6;
+      color: #b76e00;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      margin: 20px 0;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Post a Job</h1>
+    <form id="jobForm">
+      <label>Job Title</label>
+      <input type="text" id="jobTitle" required />
+      <label>Required Skills</label>
+      <input type="text" id="skills" required />
+      <label>Job Description</label>
+      <textarea id="description" rows="4" required></textarea>
+      <label>Location</label>
+      <input type="text" id="location" required />
+      <label>Salary (optional)</label>
+      <input type="text" id="salary" />
+      <label>Interview Meeting Link</label>
+      <input type="url" id="meetingLink" placeholder="https://meet.google.com/your-link" required />
+      <button type="submit">Post Job</button>
+    </form>
+
+    <div class="job-listings" id="jobListings">
+      <h2>Available Jobs</h2>
+      <input type="text" id="searchInput" placeholder="Search jobs by title or skill..." />
+      <div id="jobCards"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("jobForm");
+    const jobCardsContainer = document.getElementById("jobCards");
+    const searchInput = document.getElementById("searchInput");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById("jobTitle").value;
+      const skills = document.getElementById("skills").value;
+      const desc = document.getElementById("description").value;
+      const location = document.getElementById("location").value;
+      const salary = document.getElementById("salary").value;
+      const meeting = document.getElementById("meetingLink").value;
+
+      const card = document.createElement("div");
+      card.className = "job-card";
+      card.innerHTML = `
+        <h3>${title}</h3>
+        <p><strong>Skills:</strong> ${skills}</p>
+        <p><strong>Description:</strong> ${desc}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>Salary:</strong> ${salary || "Not disclosed"}</p>
+        <button class="apply-btn">Apply Now</button>
+        <div class="apply-form">
+          <label>Your Name</label>
+          <input type="text" placeholder="Enter your name" />
+          <label>Your Email</label>
+          <input type="email" placeholder="Enter your email" />
+          <label>Why should we hire you?</label>
+          <textarea rows="3" placeholder="Write your pitch"></textarea>
+          <div class="meeting-link">📅 Interview Link: <a href="${meeting}" target="_blank">${meeting}</a></div>
+        </div>
+      `;
+
+      card.querySelector(".apply-btn").addEventListener("click", () => {
+        card.classList.toggle("expanded");
+        const form = card.querySelector(".apply-form");
+        form.style.display = form.style.display === "block" ? "none" : "block";
+      });
+
+      jobCardsContainer.appendChild(card);
+      form.reset();
+    });
+
+    searchInput.addEventListener("input", function() {
+      const filter = this.value.toLowerCase();
+      const cards = jobCardsContainer.querySelectorAll(".job-card");
+      cards.forEach(card => {
+        const title = card.querySelector("h3").textContent.toLowerCase();
+        const skills = card.querySelector("p").textContent.toLowerCase();
+        card.style.display = title.includes(filter) || skills.includes(filter) ? "block" : "none";
+      });
+    });
+  </script>
+
+</body>
+</html>
