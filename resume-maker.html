@@ -256,9 +256,9 @@
 async function enhanceWithAI(text) {
   if (!text || text.length > 600) return text;
 
-  const apiKey = "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"; // ← Replace with your actual key
+  const apiKey = "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"; // ← Replace with your actual key
   const payload = {
-    model: "llama-3.3-70b-versatile",
+    model: "llama-3.1-8b-instant",
     messages: [
       {
         role: "system",
@@ -337,3 +337,4 @@ document.getElementById("resumeForm").addEventListener("submit", async (e) => {
 
 </body>
 </html>
+
